@@ -48,7 +48,16 @@ mennyiseg.append(" l ")
 mennyiseg.append(" hl ")
 mennyiseg.remove(" hl ") #mennyiseg.pop(4)
 
-#Alprogram készítése és hívása
+#Alprogram definiálása és hívása
+#Ez az alprogram egy olyan másik alprogramot hív meg, amely még nincs definiálva a hívás pillanatában
+#Futtatásnál ebből nem lesz probléma, mert mire ez az előre definiált alprogram hívásra kerül, már létezik a mixer()
+def pincer():   
+    print("A recept a professzor híres koktéljához:")
+    recept_hossz = random.randint(1,len(koktel))
+    for i in range(recept_hossz):
+        mixer()
+    print(veletlen_osszetevo[rand])
+
 def mixer():
     x = random.randint(0,len(mennyiseg)-1)
     y = random.randint(0,len(koktel)-1)
@@ -56,11 +65,9 @@ def mixer():
     print(str(z) + mennyiseg[x] + koktel[y])
     koktel.pop(y)
 
-def pincer():
-    print("A recept a professzor híres koktéljához:")
-    recept_hossz = random.randint(1,len(koktel))
-    for i in range(recept_hossz):
-        mixer()
-    print(veletlen_osszetevo[rand])
+#Itt hívjuk az alprogramunkat
+#A hívás pillanatában már definiált kell, hogy legyen minden résztvevő
+pincer()
+
 
 print("További receptekért kövesd az oldalam és jeletkezz fel az értesítési listára!")
