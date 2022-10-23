@@ -11,24 +11,28 @@ import math
 
 def feladat_1():
     szamok = [1,2,3,4,5,6,7,8,9,10]
+    
 
     for i in range(0,10):
         szamok[i] = random.randint(5,25)
         print(szamok[i], end=" ")
 
     print()
-    szamok.reverse()
-    print(szamok, end=" ")
+    szamok_forditott = szamok   #ideiglenes listába rakjuk, hogy az eredeti ne sérüljön
+    szamok_forditott.reverse()
+    print(szamok_forditott, end=" ")
     print()
-    szamok.reverse()
 
 
+    #egyszerűbb megoldás, az első páros elem indexétől lépünk végig a tömbön kettesével
     for i in range(1,10,2):
         print(szamok[i], end=" ")
     print()
     #<-->
+
+    #teljes iterálás, ellenőrizzük a mod (%) maradékos osztással, hogy az elem páros-e
     for i in range(0,10):
-        if i % 2 != 0:
+        if i % 2 != 0:  #0-tól indexel, tehát minden páratlanADIK elem lesz a páros számú elem
             print(szamok[i], end=" ")
     print()
 
