@@ -31,7 +31,7 @@ def feladat_2():
 
 #############################################################
 
-
+# többi feladat számára globális változóban egy fix szólista:
 szolista = [
         "vérfarkas",
         "véreb",
@@ -48,16 +48,7 @@ szolista = [
 # HÁNY SZÓ KEZDŐDIK AZ ADOTT SZÓRÉSZLETTEL
 
 def feladat_3():
-    szolista = [
-        "vérfarkas",
-        "véreb",
-        "szekrény",
-        "szekta",
-        "python",
-        "Azerbajdzsán",
-        "Limuzin",
-        "anekdotákkal"
-    ]
+
     substring = "szek"
     mennyi = 0
 
