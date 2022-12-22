@@ -1,3 +1,35 @@
+"""
+greet = "Hello Világ!"
+cls()
+for i in range(len(greet)):
+    print(greet[i], end="", flush=True)
+    time.sleep(0.3)
+
+def myPrint(szoveg):
+    for i in range(len(szoveg)):
+        print(szoveg[i], end="", flush=True)
+        time.sleep(0.3)
+
+myPrint("Viszlát kegyetlen világ!")
+
+print("MARKER")
+#!/usr/bin/python
+import myPy
+
+    def leghosszabbValaszok(betu):
+    max = 0
+    for i in range(len(dataList)):
+        if len(eval("dataList[i]." + betu)) > max:
+            max = len(eval("dataList[i]." + betu))
+    print("Leghosszabb válasz " + betu + ": " + str(max))
+
+leghosszabbValaszok("A")    #30
+leghosszabbValaszok("B")    #32
+leghosszabbValaszok("C")    #32
+leghosszabbValaszok("D")    #35
+exit()
+"""
+
 import random
 import time
 import os
@@ -75,22 +107,24 @@ nyeremenyek = [
     "5 000 000 Ft",
     "Három gyerek",
     "20 000 000 Ft",
-    "40 000 000 Ft",
+    "40 000 000 Ft"
     ]
 
 felezesek = 3
+counter = 0
+
 
 def ujKerdes():
+
     global felezesek
+
     cls()
-    i = random.randint(0,len(dataList))
+    ran = random.randint(0,len(dataList))
     valasz = "valasz"
 
-    print(dataList[i].kerdes)
-    print("A: " + dataList[i].A, end="\t\t")
-    print("B: " + dataList[i].B)
-    print("C: " + dataList[i].C, end="\t\t")
-    print("D: " + dataList[i].D)
+    print(dataList[ran].kerdes)
+    print("A: %35s B: %35s \nC: %35s D: %35s" % 
+    (dataList[ran].A.ljust(35), dataList[ran].B.ljust(35), dataList[ran].C.ljust(35), dataList[ran].D.ljust(35)))
 
     print("\nF: felezések száma: ", end="")
     for j in range(felezesek):
@@ -100,55 +134,66 @@ def ujKerdes():
     while valasz not in ["A", "B", "C", "D", "F"]:
         valasz = input("A válaszod: ").upper()
 
-    if valasz == "F":
-        if felezesek > 0:
-            felezesek = felezesek-1
-            felezo(i)
+        if valasz == "F":
+            if felezesek > 0:
+                felezesek = felezesek-1
+                valasz = felezo(ran)
+            else:
+                valasz = "valasz"
 
-    if valasz == dataList[i].helyes:
-        print("Helyes!")
-        dataList.pop(i)
-        time.sleep(2)
-        ujKerdes()
-    else:
-        print("Nem jóóóó!")
-        print("A helyes válasz: " + dataList[i].helyes + " - " + eval("dataList[i]."+dataList[i].helyes))
+    valaszEllenorzo(ran, valasz)
 
-def felezo(i):
+
+def felezo(kerdesSzam):
     
     cls()
 
-    print(dataList[i].kerdes)
+    print(dataList[kerdesSzam].kerdes)
 
-    valaszok_fix = ["A", "B", "C", "D"]
-    valaszok_temp = valaszok_fix
+    valaszok_temp = ["A", "B", "C", "D"]
     delete = 0
     for j in range(2):
-        while valaszok_temp[delete] == dataList[i].helyes:
-            delete = random.randint(0,len(valaszok_temp)-1)
+        while valaszok_temp[delete] == dataList[kerdesSzam].helyes:
+            delete = random.randint(0,len(valaszok_temp)-1) 
         valaszok_temp.pop(delete)
             
     valasz = "valasz"
 
-    
-    print(valaszok_temp[0] + " " + eval("dataList[i]." + valaszok_temp[0]))
-    print(valaszok_temp[1] + " " + eval("dataList[i]." + valaszok_temp[1]))
+    for i in range(2):
+        print(valaszok_temp[i] + " " + eval("dataList[kerdesSzam]." + valaszok_temp[i]))
 
-    while valasz not in ["A", "B", "C", "D", "F"]:
+    while valasz not in ["A", "B", "C", "D"]:
         valasz = input("A válaszod: ").upper()
+    
+    return valasz
 
-    if valasz == "F":
-        print("Már feleztünk!")
 
-    if valasz == dataList[i].helyes:
+def valaszEllenorzo(kerdesSzam, valasz):
+
+    if valasz == dataList[kerdesSzam].helyes:
         print("Helyes!")
-        dataList.pop(i)
+        dataList.pop(kerdesSzam)
         time.sleep(2)
-        ujKerdes()
     else:
         print("Nem jóóóó!")
-        print("A helyes válasz: " + dataList[i].helyes + " - " + eval("dataList[i]."+dataList[i].helyes))
+        print("A helyes válasz: " + dataList[kerdesSzam].helyes + " - " + eval("dataList[kerdesSzam]."+dataList[kerdesSzam].helyes))
+        if counter == 0:
+            print("A nyereményed egy nagy semmi lett volna amúgy is.")
+        else:
+            print("A nyereményed " + nyeremenyek[counter-1] + " lett volna.")
+        exit()
 
-    return felezesek
 
-ujKerdes()
+
+for i in range(len(nyeremenyek)):
+    ujKerdes()
+    print("A jelenlegi nyereményed: " + nyeremenyek[counter])
+    if counter != len(nyeremenyek)-1:
+        print("A következő nyereményed: " + nyeremenyek[counter+1])
+        time.sleep(4)
+        counter += 1
+    else:
+        print("Gratulálok, nyertél!")
+        exit()
+    if i % 5 == 0:
+        felezesek += 1
