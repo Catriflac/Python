@@ -1,11 +1,13 @@
 """
+Random dolgok:
+
 greet = "Hello Világ!"
 cls()
 for i in range(len(greet)):
-    print(greet[i], end="", flush=True)
+    print(greet[i], end="", flush=True) # Karakterenként ír ki szöveget
     time.sleep(0.3)
 
-def myPrint(szoveg):
+def myPrint(szoveg):        # Karakterenként írja ki a paraméterként kapott szöveget
     for i in range(len(szoveg)):
         print(szoveg[i], end="", flush=True)
         time.sleep(0.3)
@@ -13,26 +15,43 @@ def myPrint(szoveg):
 myPrint("Viszlát kegyetlen világ!")
 
 print("MARKER")
-#!/usr/bin/python
-import myPy
+#!/usr/bin/python       # interpreter meghívása
+import myPy             # külső py futtatása
 
-    def leghosszabbValaszok(betu):
-    max = 0
-    for i in range(len(dataList)):
-        if len(eval("dataList[i]." + betu)) > max:
-            max = len(eval("dataList[i]." + betu))
-    print("Leghosszabb válasz " + betu + ": " + str(max))
+def leghosszabbValaszok(betu):      # keressük meg a leghosszabb válaszokat...
+max = 0
+for i in range(len(dataList)):
+    if len(eval("dataList[i]." + betu)) > max:
+        max = len(eval("dataList[i]." + betu))
+print("Leghosszabb válasz " + betu + ": " + str(max))
 
 leghosszabbValaszok("A")    #30
 leghosszabbValaszok("B")    #32
 leghosszabbValaszok("C")    #32
 leghosszabbValaszok("D")    #35
 exit()
+
+
+# Ez a példa kiír nekünk 3 random kérdést a helyes válasz betűjelével és a helyes válasszal
+def peldaKiiras():
+    for i in range(3):
+        j = random.randint(0,len(dataList))
+        helyesValaszBetujele = dataList[j].helyes           # Ez a helyes válasz betűjele (pl.: "B")
+        print(
+            dataList[j].kerdes + 
+            "\nA helyes válasz: " + 
+            dataList[j].helyes + 
+            " (" +
+            # Ennek a következő sornak az eredménye pl.: "dataList[i].B" és az eval() fx változóként meg fogja hívni a kiíráshoz:
+            eval("dataList[j]." + helyesValaszBetujele) +   
+            ")" )
+        dataList.pop(j)     # Nem akarunk ismétlődő kérdéseket...
 """
 
 import random
 import time
 import os
+import datetime
 
 # Cross-platform konzoltisztító
 def cls():
@@ -77,21 +96,9 @@ i = 42
 print(dataList[i].kerdes)
 """
 
-# Ez a példa kiír nekünk 3 random kérdést a helyes válasz betűjelével és a helyes válasszal
-def peldaKiiras():
-    for i in range(3):
-        j = random.randint(0,len(dataList))
-        helyesValaszBetujele = dataList[j].helyes           # Ez a helyes válasz betűjele (pl.: "B")
-        print(
-            dataList[j].kerdes + 
-            "\nA helyes válasz: " + 
-            dataList[j].helyes + 
-            " (" +
-            # Ennek a következő sornak az eredménye pl.: "dataList[i].B" és az eval() fx változóként meg fogja hívni a kiíráshoz:
-            eval("dataList[j]." + helyesValaszBetujele) +   
-            ")" )
-        dataList.pop(j)     # Nem akarunk ismétlődő kérdéseket...
-
+# Most következnek a globális változók
+# A nyeremenyek lista adja majd meg az egész játék hosszát (a játék addig fut, amíg a nyeremények el nem fogynak vagy a felhasználó meg nem szakítja a játékot)
+# A felezesek és counter induló értékeket tartalmaznak, így azokat mindenképp a "global scope"-ban tartjuk
 nyeremenyek = [
     "Egy szem rumos szaloncukor",
     "4000 Ft (...tudsz ötösből visszaadni?)",
@@ -113,13 +120,44 @@ nyeremenyek = [
 felezesek = 3
 counter = 0
 
+# Most pedig elkészítjük a segédfüggvényeinket, mert nem akarjuk a main ciklust telespammelni olyan modulokkal, amik köszönik szépen, jól érzik magukat szegregálva is...
 
+
+def intro():
+    cls()
+
+    def myPrint(szoveg):        # Karakterenként írja ki a paraméterként kapott szöveget
+        for i in range(len(szoveg)):
+            print(szoveg[i], end="", flush=True)
+            time.sleep(0.05)
+        print()
+        time.sleep(1)
+    
+    today = datetime.date.today()
+    myPrint("Isten hozott a Legyen Ön is Milliomos " + today.strftime("%Y %b %d") + "-i adásában!")
+    myPrint("A feladatod az egyes kérdések helyes megválaszolása.")
+    myPrint("Három felezési lehetőséged van, azonban az 5. és 10. kérdésnél kapsz még egyet-egyet.")
+    myPrint("Indulhat a játék?\n")
+
+    for i in range(3,0,-1):
+        myPrint(str(i) + "...")
+    
+    print("A játék indul!")
+    time.sleep(2)
+
+# Az ujKerdes feltesz egy új kérdést, kiírja a lehetséges válaszokat és be is olvassa a felhasználó által adott választ. Utóbbi függvényében hívja tovább a felezo() vagy valaszEllenorzo() segédfüggvényeket
 def ujKerdes():
 
     global felezesek
 
     cls()
-    ran = random.randint(0,len(dataList))
+    if i <= 5:
+        ran = random.randint(0,100)
+    elif i <= 10:
+        ran = random.randint(0,1500)
+    else:
+        ran = random.randint(0,len(dataList))
+
     valasz = "valasz"
 
     print(dataList[ran].kerdes)
@@ -143,7 +181,7 @@ def ujKerdes():
 
     valaszEllenorzo(ran, valasz)
 
-
+# A felezo() fx paraméterként megkapja az adott kérdés azonosítóját és újra kiírja, immár felezett válaszlehetőségekkel, valamint visszaadja (return) az új választ (anélkül maradna "F", amivel a felezo() meg lett hívva.)
 def felezo(kerdesSzam):
     
     cls()
@@ -167,7 +205,7 @@ def felezo(kerdesSzam):
     
     return valasz
 
-
+# A valaszEllenorzo() fx paraméterként megkapja a kérdés azonosítóját és az adott választ, majd azt kiértékeli. Rossz válasz esetén megadja, hogy mi lett volna a helyes, majd elköszön és kilép. Jó válasz esetén folytatódik a főciklus.
 def valaszEllenorzo(kerdesSzam, valasz):
 
     if valasz == dataList[kerdesSzam].helyes:
@@ -183,17 +221,41 @@ def valaszEllenorzo(kerdesSzam, valasz):
             print("A nyereményed " + nyeremenyek[counter-1] + " lett volna.")
         exit()
 
+# A folytatas_megallas lehetőséget ad a helyesen megválaszolt kérdés után megtartani a nyereményt vagy kockáztatni és tovább haladni.
+def folytatas_megallas():
 
+    global counter
 
-for i in range(len(nyeremenyek)):
-    ujKerdes()
+    time.sleep(1)
+    cls()
+
     print("A jelenlegi nyereményed: " + nyeremenyek[counter])
     if counter != len(nyeremenyek)-1:
         print("A következő nyereményed: " + nyeremenyek[counter+1])
-        time.sleep(4)
-        counter += 1
+
+        folytatas = "folytatas"
+        while folytatas not in ["M", "F"]:
+            folytatas = input("\nFolytatáshoz nyomj F betűt,\nha inkább megállsz a jelenlegi nyereményednél, nyomj M billentyűt: ").upper()
+
+        if folytatas == "F":
+            counter += 1
+        else:
+            print("Abbahagytad a játékot! A nyereményed: " + nyeremenyek[counter] + "\nGratulálunk hozzá!")
+            exit()
+        
     else:
         print("Gratulálok, nyertél!")
         exit()
-    if i % 5 == 0:
+    if i % 5 == 0 and i != 0:
         felezesek += 1
+
+
+# Ez a főciklus, ide a leglényegesebb dolgok kerülnek és igyekszünk nagyon tisztán tartani. Hogy a kódismétlést elkerüljük, minden lényeges feladatot a segédfüggvényekkel végeztetünk el.
+
+intro()
+
+for i in range(len(nyeremenyek)):
+
+    ujKerdes()
+
+    folytatas_megallas()    
