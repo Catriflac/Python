@@ -151,7 +151,7 @@ def drawBoardState(tableEmpty):
     # Kiírjuk a játékos életét és a jelmagyarázatot
     for i in range(0, playerLife):
         print("♥ ", end="")
-    print(f"\nJelmagyarázat: \n{symbols['empty']}: biztonságos mező\n ##: felfedezetlen mező\n{symbols['mine']}: akna\n{symbols['flag']}: akna környezetében (vízszintesen vagy függőlegesen) lévő mező\n")
+    print(f"\nJelmagyarázat: \n{symbols['empty']}: biztonságos mező\n##: felfedezetlen mező\n{symbols['mine']}: akna\n{symbols['flag']}: akna környezetében (vízszintesen vagy függőlegesen) lévő mező\n")
     
     # Kirajzoljuk a táblát
     for row in tableEmpty:
