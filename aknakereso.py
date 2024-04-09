@@ -5,7 +5,7 @@ import math
 
 string_peldaSzoveg = "Ez egy szöveg"        # A string szöveg, ami ha belegondolunk, akkor karakterek véges hosszú tömbje
 int_peldaInteger = 42                       # Az int egész szám, ami a matematikában ismert egész számokat jelenti
-float_peldaFloat = 3.14                     # A float lebegőpontos szám, ami a matematikában ismert valós számokat jelenti
+float_peldaFloat = 3.14                     # A float lebegőpontos szám, ami a matematikában ismert racionális számokat jelenti (véges törtek)
 bool_peldaBool = True                       # A bool logikai érték, ami a logikai igaz/hamis értékeket jelenti. Nagyon hasznos átláthatóság szempontjából.
 list_peldaLista = [1, 2, 3, 4, 5]           # A list lista, ami egy tetszőleges hosszúságú tömböt jelent
 tuple_peldaTuple = (1, 2, 3, 4, 5)          # A tuple tuple, ami egy tetszőleges hosszúságú, de nem módosítható tömböt jelent
@@ -94,6 +94,7 @@ print("^^^ ez már hasonlít egy játéktáblára\nMit tudunk vele kezdeni?")
 # Inicializálom a globálisan használadnó változókat. A szimbólumokat szeretném, hogy nyugodtan és szabadon kezelje bármelyik függvény
 global symbols                                                    # A global kulcsszóval globális változóvá tesszük a symbols változót, így a függvények is elérhetik anélkül, hogy paraméterként át kellene adni
 symbols = {"mine" : "☠ ", "empty" : "⛶ ", "flag" : "⚑ "}        # Egy dictionary, ami a játékban használt szimbólumokat tartalmazza. Van egy extra space is a szimbólumok előtt, hogy szebb legyen a megjelenítés
+# https://symbl.cc/en/unicode-table/#miscellaneous-symbols   <- itt találsz használható unicode szimbólumokat, és elég csak itt kicserélni őket
 
 # Ezzel a függvénnyel generálunk egy n*n-es aknakereső táblát (kitöltött és üres), és visszaadjuk a két táblát és az aknák számát
 def generateTable(n):
