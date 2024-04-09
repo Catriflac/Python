@@ -93,7 +93,7 @@ print("^^^ ez már hasonlít egy játéktáblára\nMit tudunk vele kezdeni?")
 
 # Inicializálom a globálisan használadnó változókat. A szimbólumokat szeretném, hogy nyugodtan és szabadon kezelje bármelyik függvény
 global symbols                                                    # A global kulcsszóval globális változóvá tesszük a symbols változót, így a függvények is elérhetik anélkül, hogy paraméterként át kellene adni
-symbols = {"mine" : " ☠", "empty" : " ⛶", "flag" : " ⚑"}        # Egy dictionary, ami a játékban használt szimbólumokat tartalmazza. Van egy extra space is a szimbólumok előtt, hogy szebb legyen a megjelenítés
+symbols = {"mine" : "☠ ", "empty" : "⛶ ", "flag" : "⚑ "}        # Egy dictionary, ami a játékban használt szimbólumokat tartalmazza. Van egy extra space is a szimbólumok előtt, hogy szebb legyen a megjelenítés
 
 # Ezzel a függvénnyel generálunk egy n*n-es aknakereső táblát (kitöltött és üres), és visszaadjuk a két táblát és az aknák számát
 def generateTable(n):
