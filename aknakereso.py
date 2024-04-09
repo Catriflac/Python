@@ -84,20 +84,27 @@ fejSzamolas()                                                       # A fejSzamo
 array2D = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]                       # Egy 2D lista, ami 3 db 3 elemű listát tartalmaz
 for array in array2D:
     print(array)                                                  # Ez már hasonlít pl egy játéktáblához
+print("^^^ ez már hasonlít egy játéktáblára\nMit tudunk vele kezdeni?")
+
+###
+### Aknakereső példa
+###
 
 
-# Aknakereső példa
-
+# Inicializálom a globálisan használadnó változókat. A szimbólumokat szeretném, hogy nyugodtan és szabadon kezelje bármelyik függvény
 global symbols                                                    # A global kulcsszóval globális változóvá tesszük a symbols változót, így a függvények is elérhetik anélkül, hogy paraméterként át kellene adni
-symbols = {"mine" : " ✧", "empty" : " □", "flag" : " ⚑"}            # Egy dictionary, ami a játékban használt szimbólumokat tartalmazza. Van egy extra space is a szimbólumok előtt, hogy szebb legyen a megjelenítés
+symbols = {"mine" : " ☠", "empty" : " ⛶", "flag" : " ⚑"}        # Egy dictionary, ami a játékban használt szimbólumokat tartalmazza. Van egy extra space is a szimbólumok előtt, hogy szebb legyen a megjelenítés
 
+# Ezzel a függvénnyel generálunk egy n*n-es aknakereső táblát (kitöltött és üres), és visszaadjuk a két táblát és az aknák számát
 def generateTable(n):
+
     global symbols
-    tableFilled = [[symbols["empty"]] * n for i in range(n)]      # Egy n * n-es üres tábla létrehozása
-    numberOfMines = random.randint(math.floor(n/2), n*2)          # Random számú akna generálása
+
+    tableFilled = [[symbols["empty"]] * n for i in range(n)]      # Egy n * n-es üres szimbólumos tábla létrehozása
+    numberOfMines = random.randint(math.floor(n), n*2)            # Random számú akna generálása (min n, max 2*n)
     for i in range(numberOfMines):
-        x = random.randint(0, n-1)                                # Random x koordináta
-        y = random.randint(0, n-1)                                # Random y koordináta
+        x = random.randint(0, n-1)                                # Random valid x koordináta
+        y = random.randint(0, n-1)                                # Random valid y koordináta
         tableFilled[x][y] = symbols["mine"]                       # Az akna elhelyezése a táblán
 
     tableEmpty = []                                               # Ez az üres tábla lesz megjelenítve a játékosnak, itt még nincsenek felfedezve a mezők
@@ -106,18 +113,27 @@ def generateTable(n):
         for j in range(n):
             row.append([str(i)+str(j)])                           # A mezők és koordinátáik hozzáadása a sorhoz
         tableEmpty.append(row)                                    # A sor hozzáadása a táblához
+
     return tableFilled, tableEmpty, numberOfMines                 # A függvény visszaadja a két táblát és az aknák számát
 
-def revealCell_CheckGameOver(tableFilled, tableEmpty, x, y):                    # A játékos által kijelölt mező felfedése
+# Ezzel a függvénnyel felfedjük a játékos által kiválasztott mezőt, és ellenőrizzük, hogy vége van-e a játéknak
+def revealCell_CheckGameOver(tableFilled, tableEmpty, x, y):      # A játékos által kijelölt mező felfedése
+    
+    # Meghívom használatra a globális változókat, amiket olvasni vagy írni szeretnék
     global symbols
     global playerLife
+    
     tableEmpty[x][y] = tableFilled[x][y]                          # A felfedett mező értékét beállítjuk a referencia táblán lévő értékre
+    
+    # Ha aknát talál...
     if tableFilled[x][y] == symbols["mine"]:                      # Ha az adott mezőn akna van, akkor -1HP
         playerLife -= 1
         if playerLife == 0:                                       # Ha 0HP, akkor Game Over
             print("Game over!")
             return True                                           # A függvény egyben azt is visszaadja, hogy vége a játéknak...
         return False                                              # ...vagy folytatódhat a játék
+    
+    # Ha nincs akna a kiválasztott mezőn (de mellette pl lehet...)
     else:                                                         # Ha nincs akna az adott mezőn, akkor kezeljük le a megjelenítést
         originalX, originalY = x, y
         surroundingCells = [(x-1, y), (x, y-1), (x, y+1), (x+1, y)]     # Az adott mező környező mezőinek koordinátái egy tuple listában
@@ -128,7 +144,15 @@ def revealCell_CheckGameOver(tableFilled, tableEmpty, x, y):                    
                     tableEmpty[originalX][originalY] = symbols["flag"]              # Ha a környező mezőn van akna, akkor a felfedett mezőt jelöljük meg
         return False
 
+# Ezzel rajzoljuk ki a teljes játékteret minden körben
 def drawBoardState(tableEmpty):
+
+    # Kiírjuk a játékos életét és a jelmagyarázatot
+    for i in range(0, playerLife):
+        print("♥ ", end="")
+    print(f"\nJelmagyarázat: \n{symbols['empty']}: biztonságos mező\n ##: felfedezetlen mező\n{symbols['mine']}: akna\n{symbols['flag']}: akna környezetében (vízszintesen vagy függőlegesen) lévő mező\n")
+    
+    # Kirajzoljuk a táblát
     for row in tableEmpty:
         for cell in row:
             if isinstance(cell, list):                  # Ha a cell egy lista, akkor a koordinátákat tartalmazza, ezért kiírjuk az első elemét
@@ -137,40 +161,49 @@ def drawBoardState(tableEmpty):
                 print(cell, end=" ")
         print()
 
+# Minden kör elején ellenőrizzük azt is, hogy a játékos nyert-e
 def isWon(tableEmpty, n, numberOfMines):
+
     safeCellsFound = 0
     allCells = n * n
+
     for row in tableEmpty:
         for cell in row:
+            # Ha üres (simán üres vagy zászlóval jelölt), akkor biztonságos mezőnek számít (nem akna)
             if cell is symbols["flag"] or cell is symbols["empty"]:
                 safeCellsFound += 1
+
     print(f"Biztonságos cellák megtalálva: {safeCellsFound} / {allCells - numberOfMines}, aknák száma: {numberOfMines}")
     return (safeCellsFound == allCells - numberOfMines)                          # Ez itt király! A visszatérési érték itt boolean. Miért? Mivel a == operátor visszaad egy igaz/hamis értéket, és ezt a függvény visszaadja
 
-def beginGame():
+def mineSweeper():
+
+    # Játék változóinak inicializálása
     time.sleep(5)
     global playerLife
     playerLife = 3
     gameOver = False
+
+    # Játék indítása
     print("Üdvözöllek az aknakeresőben!")
     n = 0
     while (n < 3 or n > 10):
         n = int(input("Add meg a tábla méretét (3-10): "))
     tableFilled, tableEmpty, numberOfMines = generateTable(n)
+
+    # Játékmenet
     while (not gameOver):
         os.system('cls' if os.name == 'nt' else 'clear')
         if isWon(tableEmpty, n, numberOfMines):
             print("Nyertél!")
             return 0
-        for i in range(0, playerLife):
-            print("♥ ", end="")
-        print(f"\nJelmagyarázat: \n{symbols['empty']}: biztonságos mező\n ##: felfedezetlen mező\n{symbols['mine']}: akna\n{symbols['flag']}: akna környezetében (vízszintesen vagy függőlegesen) lévő mező\n")
         drawBoardState(tableEmpty)
         userChoice = input("Add meg a koordinátákat (xy): ")
         x, y = int(userChoice[0]), int(userChoice[1])
         gameOver = revealCell_CheckGameOver(tableFilled, tableEmpty, x, y)
 
+    # Játék vége
     print("Vége a játéknak!")
 
 
-beginGame()                                                       # Ha kikommenteled ezt a sort, akkor az aknakereső nem fog lefutni
+mineSweeper()                                                       # Ha kikommenteled ezt a sort, akkor az aknakereső nem fog lefutni
