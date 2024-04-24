@@ -73,7 +73,8 @@ def send_email(recipient_email, bcc_email, subject, message, attachment_path=Non
     message_obj["To"] = recipient_email
     message_obj["Bcc"] = bcc_email 
     message_obj["Subject"] = subject
-    message_id = f"<{str(uuid.uuid4())}@ttworld.hu>"
+    message_id_server = sender_email.split("@")[1]
+    message_id = f"<{str(uuid.uuid4())}@{message_id_server}>"
     message_obj["Message-ID"] = Header(message_id)
     message_obj["Date"] = formatdate(localtime=True)
 
