@@ -1,3 +1,12 @@
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email.header import Header
+import uuid
+from email import encoders
+from email.utils import formatdate
+from datetime import datetime
+
 # Print a warning message with the specified color
 def warn(string, clr):
     """
